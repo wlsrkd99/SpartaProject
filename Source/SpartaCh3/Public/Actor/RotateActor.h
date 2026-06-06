@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "RotateActor.generated.h"
 
+class UStaticMeshComponent;
+
 UCLASS()
 class SPARTACH3_API ARotateActor : public AActor
 {
@@ -19,6 +21,9 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* MeshComponent;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actor|Properties")
 	FVector StartLocation;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actor|Properties")

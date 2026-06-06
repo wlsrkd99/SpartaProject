@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "MoveActor.generated.h"
 
+class UStaticMeshComponent;
+
 UCLASS()
 class SPARTACH3_API AMoveActor : public AActor
 {
@@ -22,12 +24,15 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	
 public:
+UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* MeshComponent;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actor|Properties")
 	FVector StartLocation;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Actor|Properties")
 	FVector MoveDirection;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor|Properties", meta = (ClampMin="0.0"))
-	float MaxRange;
+	float MoveRange;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor|Properties", meta = (ClampMin="0.0"))
 	float MoveSpeed;
 };

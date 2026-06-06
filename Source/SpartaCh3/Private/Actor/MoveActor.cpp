@@ -1,20 +1,23 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actor/MoveActor.h"
+#include "Components/StaticMeshComponent.h"
 
-// Sets default values
 AMoveActor::AMoveActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	RootComponent = MeshComponent;
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> CubeMeshAsset(TEXT("/Engine/BasicShapes/Cube.Cube"));
+	if (CubeMeshAsset.Succeeded())
+	{
+		MeshComponent->SetStaticMesh(CubeMeshAsset.Object);
+	}
 }
 
-// Called when the game starts or when spawned
 void AMoveActor::BeginPlay()
 {
 	Super::BeginPlay();
+
 	ResetActorPosition();
 	if (MoveDirection.IsZero())
 		MoveDirection = GetActorForwardVector();
@@ -29,10 +32,10 @@ void AMoveActor::Tick(float DeltaTime)
 	SetActorLocation(CurrentLocation);
 	
 	float DistanceMoved = FVector::Dist(StartLocation, CurrentLocation);
-	if (DistanceMoved >= MaxRange)
+	if (DistanceMoved >= MoveRange)
 	{
 		FVector TrimmedDirection = MoveDirection.GetSafeNormal();
-		SetActorLocation(StartLocation + (TrimmedDirection * MaxRange));
+		SetActorLocation(StartLocation + (TrimmedDirection * MoveRange));
 		MoveDirection = -MoveDirection;
 	}
 }
