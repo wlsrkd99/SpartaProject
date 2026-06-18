@@ -24,18 +24,21 @@ void APuzzleManager::SpawnPlatform()
 	UWorld* World = GetWorld();
 	if (!World) return;
 
+	const FVector ManagerLocation = GetActorLocation();
+
 	for (const FPuzzleSpawnInfo& SpawnInfo : SpawnInfos)
 	{
 		if (SpawnInfo.PlatformClass)
 		{
-			const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnInfo.SpawnLocation);
+			const FVector SpawnLocation = ManagerLocation + SpawnInfo.SpawnLocation;
+			const FTransform SpawnTransform(FRotator::ZeroRotator, SpawnLocation);
 			AActor* SpawnedActor = World->SpawnActorDeferred<AActor>(SpawnInfo.PlatformClass, SpawnTransform, this);
 
  			if (SpawnedActor)
  			{
  				if (ATimerMoveActor* TimerMoveActor = Cast<ATimerMoveActor>(SpawnedActor))
  				{
- 					TimerMoveActor->StartLocation = SpawnInfo.SpawnLocation;
+ 					TimerMoveActor->StartLocation = SpawnLocation;
  					if (FMath::RandBool())
  					{
  						TimerMoveActor->bToggle = true;
@@ -56,13 +59,13 @@ void APuzzleManager::SpawnPlatform()
  				{
  					MoveActor->MoveSpeed = FMath::FRandRange(100.f, 500.f);
  					MoveActor->MoveRange = FMath::FRandRange(200.f, 1000.f);
- 					MoveActor->StartLocation = SpawnInfo.SpawnLocation;
+ 					MoveActor->StartLocation = SpawnLocation;
  					MoveActor->MoveDirection = GetRandomDirection();
  				}
  				else if (ARotateActor* RotateActor = Cast<ARotateActor>(SpawnedActor))
  				{
  					RotateActor->RotationSpeed = FMath::FRandRange(45.f, 180.f);
- 					RotateActor->StartLocation = SpawnInfo.SpawnLocation;
+ 					RotateActor->StartLocation = SpawnLocation;
  					RotateActor->RotationDirection = GetRandomDirection();
  				}
 				SpawnedActor->FinishSpawning(SpawnTransform);
